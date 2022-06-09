@@ -1,0 +1,206 @@
+Q1
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        
+        int n = matrix.size();
+        for(int i=0; i<n; i++){
+            for(int j=0; j<i; j++){
+                swap(matrix[i][j], matrix[j][i]);
+            }
+        }
+        
+        for(int i=0; i<n; i++){
+            reverse(matrix[i].begin(), matrix[i].end());
+        }
+    }
+};
+Q2
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        
+        sort(intervals.begin(), intervals.end());
+        stack<int> st;
+        st.push(intervals[0][0]);
+        st.push(intervals[0][1]);
+        
+        for(int i=1; i<intervals.size(); i++){
+            if(st.top() < intervals[i][0]){
+                st.push(intervals[i][0]);
+                st.push(intervals[i][1]);
+            }
+            else if(st.top() < intervals[i][1]){
+                st.pop();
+                st.push(intervals[i][1]);
+            }
+        }
+        
+        vector<vector<int>> res;
+        while(!st.empty()){
+            int a = st.top();
+            st.pop();
+            int b = st.top();
+            st.pop();
+            res.push_back({b, a});
+        }
+        
+        return res;
+    }
+};
+Q3
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        
+        for(int i=m; i<m+n; i++){
+            nums1[i] = nums2[i-m];
+        }
+        
+        int gap = ceil((m + n) / 2.0);
+        
+        while(gap){
+            int i = 0, j = gap;
+            while(j < m+n){
+                if(nums1[i] > nums1[j]){
+                    swap(nums1[i], nums1[j]);
+                }
+                if(i-gap >= 0){
+                    if(nums1[i - gap] > nums1[i]){
+                        swap(nums1[i-gap], nums1[i]);
+                    }
+                }
+                i++, j++;
+            }
+            gap /= 2;
+        }
+        
+    }
+};
+Q4
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        
+        int s = 0, f = 0;
+        
+        do{
+            s = nums[s];
+            f = nums[nums[f]];
+        }while(s != f);
+        
+        s = 0;
+        do{
+            s = nums[s];
+            f = nums[f];
+        }
+        while(s != f);
+        
+        return s;
+    }
+};
+
+Q5
+vector<int> Solution::repeatedNumber(const vector<int> &A) {
+    
+    int x = 0;
+    for(int ele:A){
+        x ^= ele;
+    }
+
+    for(int i=1; i<=A.size(); i++){
+        x ^= i;
+    }
+
+    vector<int> a, b;
+
+    int val = 1;
+    while(val != 0){
+        val = x & (x-1);
+        if(val != 0)
+            x = val;
+    }
+
+    for(int ele:A){
+        if(ele & x){
+            a.push_back(ele);
+        }
+        else{
+            b.push_back(ele);
+        }
+    }
+
+    for(int i=1; i<=A.size(); i++){
+        if(i & x){
+            a.push_back(i);
+        }
+        else{
+            b.push_back(i);
+        }
+    }
+
+     x = 0;
+     int y = 0;
+    for(int ele:a){
+        x ^= ele;
+    }
+    for(int ele:b){
+        y ^= ele;
+    }
+
+    for(int ele:A){
+        if(x == ele){
+            return {x, y};
+        }
+        else if(y == ele){
+            return {y, x};
+        }
+    }
+}
+
+Q6
+#include <bits/stdc++.h> 
+long long merge(int left, int right, long long temp[], int mid, long long *arr){
+    int i = left;
+    int j = mid;
+    int k = left;
+    int inv_count = 0;
+    
+    while(i <= mid-1 && j <= right){
+        if(arr[i] <= arr[j]){
+            temp[k++] = arr[i++];
+        }
+        else{
+            temp[k++] = arr[j++];
+            inv_count += mid - i;
+        }
+    }
+    
+    while(i <= mid-1){
+        temp[k++] = arr[i++];
+    }
+    while(j <= right){
+        temp[k++] = arr[j++];
+    }
+    
+    for(int i=left; i<=right; i++)
+        arr[i] = temp[i];
+    
+    return inv_count;
+}
+long long mergesort(int l, int r, long long temp[], long long *arr){
+    long long inv_count = 0;
+    if(l < r){
+        int mid = (r + l) / 2;
+        inv_count += mergesort(l, mid, temp, arr);
+        inv_count += mergesort(mid+1, r, temp, arr);
+        inv_count += merge(l, r, temp, mid+1, arr);
+    }
+    return inv_count;
+}
+
+long long getInversions(long long *arr, int n){
+    // Write your code here.
+    long long temp[n];
+    return mergesort(0, n-1, temp, arr);
+}
