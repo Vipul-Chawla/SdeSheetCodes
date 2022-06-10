@@ -1,0 +1,172 @@
+Q1)
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        
+        map<int, int> mp;
+        for(int i=0; i<nums.size(); i++){
+            
+            if(mp.find(target - nums[i]) != mp.end())
+                return {mp[target - nums[i]], i};
+            
+            mp[nums[i]] = i;
+        }
+        
+        return {0, 0};
+    }
+};
+
+Q2)
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        
+        sort(nums.begin(), nums.end());
+        
+        int n = nums.size();
+        
+        vector<vector<int>> res;
+        
+        int i = 0;
+        while(i<n){
+            
+            int j = i+1;
+            
+            while(j < n){
+                
+                int target_2 = target - nums[i] - nums[j];
+                int left = j+1, right = n - 1;
+                
+                while(left < right){
+                    
+                    if(nums[left] + nums[right] < target_2){
+                        left++;
+                    }
+                    else if(nums[left] + nums[right] > target_2){
+                        right--;
+                    }
+                    else{
+                        
+                        res.push_back({nums[i], nums[j], nums[left], nums[right]});
+                        int k = left+1;
+                        while(k < right && nums[left] == nums[k])
+                            k++;
+                        left = k;
+                    }
+                }
+                
+                int k = j+1;
+                
+                while(k < n && nums[j] == nums[k])
+                    k++;
+                j = k;
+                
+            }
+            
+            int k = i+1;
+            while(k < n && nums[i] == nums[k])
+                k++;
+            i = k;
+        }
+        
+        return res;
+    }
+};
+
+Q3)
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        
+        unordered_map<int, bool> mp;
+        for(int ele:nums){
+            mp[ele] = true;
+        }
+        
+        int maxi = 0;
+        for(int ele:nums){
+            if(mp.find(ele - 1) == mp.end()){
+                int cnt = 0;
+                int val = ele;
+                while(mp.find(ele) != mp.end()){
+                    cnt++;
+                    ele++;
+                }
+                maxi = max(cnt, maxi);
+            }
+        }
+        
+        return maxi;
+    }
+};
+
+Q4)
+class Solution{
+    public:
+    int maxLen(vector<int>&A, int n)
+    {   
+        // Your code here
+        map<int, int> mp;
+        int res = 0;
+        int sum = 0;
+        for(int i=0; i<A.size(); i++){
+            sum += A[i];
+            if(mp.find(sum) != mp.end()){
+                res = max(res, i - mp[sum]);
+            }
+            else{
+                mp[sum] = i;
+            }
+            if(sum == 0){
+                res = max(res, i+1);
+            }
+        }
+        
+        return res;
+    }
+};
+
+Q5)
+int Solution::solve(vector<int> &A, int B) {
+
+    map<int, int> mp;
+    int curr = 0;
+    int cnt = 0;
+    for(int i=0; i<A.size(); i++){
+        curr ^= A[i];
+
+        if(curr == B) cnt++;
+        if(mp.find(curr ^ B) != mp.end()){
+            cnt += mp[curr ^ B];
+        }
+
+        mp[curr]++;
+    }
+
+    return cnt;
+}
+
+
+Q6)
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        
+        int n = s.length();
+        int i =0, j = 0;
+        
+        int res = 0;
+        map<char, int> fre;
+        while(j < n){
+            fre[s[j]]++;
+            while(fre[s[j]] > 1){
+                fre[s[i]]--;
+                i++;
+            }
+            res = max(res, j-i+1);
+            j++;
+        }
+        
+        return res;
+    }
+};
