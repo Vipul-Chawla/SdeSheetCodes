@@ -1,0 +1,186 @@
+Q1
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        
+        ListNode* prev = NULL;
+        ListNode* curr = head;
+        ListNode* ne = head;
+        
+        while(curr){
+            ne = ne->next;
+            curr->next = prev;
+            prev = curr;
+            if(!ne)
+                return curr;
+            curr = ne;
+        }
+        return curr;
+    }
+};
+
+Q2
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        
+        ListNode* slow = head;
+        ListNode* fast = head;
+        
+        while(fast && fast->next){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        return slow;
+    }
+};
+
+Q3
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        
+        if(!list1) return list2;
+        if(!list2) return list1;
+        
+        if(list1->val < list2->val){
+            list1->next = mergeTwoLists(list1->next, list2);
+            return list1;
+        }
+        else{
+            list2->next = mergeTwoLists(list1, list2->next);
+            return list2;
+        }
+        
+        return list1;
+    }
+};
+
+Q4
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        
+        ListNode* newhead = new ListNode(-1);
+        newhead->next = head;
+        
+        ListNode* slow = newhead, *fast = head;
+        
+        while(n--)
+            fast = fast->next;
+        
+        while(fast){
+            slow = slow->next;
+            fast = fast->next;
+        }
+        
+        slow->next = slow->next->next;
+        
+        return newhead->next;
+    }
+};
+
+Q5
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        
+        int carry = 0;
+        
+        ListNode* curr1 = l1, *curr2 = l2;
+        
+        ListNode* newhead = new ListNode(-1);
+        ListNode* tail = newhead;
+        while(curr1 || curr2){
+            int sum = 0;
+            if(curr1) {
+                sum += curr1->val;
+                curr1 = curr1->next;
+            }
+            if(curr2) {
+                sum += curr2->val;
+                curr2 = curr2->next;
+            }
+            sum += carry;
+            carry = sum / 10;
+            sum %= 10;
+            
+            tail->next = new ListNode(sum);
+            tail = tail->next;
+            
+        }
+        
+        if(carry)
+            tail->next = new ListNode(carry);
+        
+        return newhead->next;
+    }
+};
+Q6
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void deleteNode(ListNode* node) {
+        
+        node->val = node->next->val;
+        node->next = node->next->next;
+    }
+};
