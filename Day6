@@ -1,0 +1,244 @@
+Q1
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        
+        int len1 = 0, len2 = 0;
+        ListNode* curr1 = headA, *curr2 = headB;
+        
+        while(curr1) {
+            curr1 = curr1->next;
+            len1++;
+        }
+        while(curr2){
+            curr2 = curr2->next;
+            len2++;
+        }
+        
+        curr1 = headA, curr2 = headB;
+        if(len1 > len2){
+            int diff = len1 - len2;
+            while(diff--)
+                curr1 = curr1->next;
+        }
+        else if(len2 > len1){
+            int diff = len2 - len1;
+            while(diff--)
+                curr2 = curr2->next;
+        }
+        
+        while(curr1 && curr2 && curr1 != curr2){
+            curr1 = curr1->next;
+            curr2 = curr2->next;
+        }
+        
+        if(curr1 != curr2) return NULL;
+        return curr1;
+    }
+};
+
+Q2
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        
+        ListNode* slow = head, *fast = head;
+        
+        while(fast && fast->next){
+            slow = slow->next;
+            fast = fast->next->next;
+            if(slow == fast)
+                return true;
+        }
+        return false;
+    }
+};
+
+Q3
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverse(ListNode* head){
+        ListNode* curr = head, *ne = head;
+        ListNode* prev = NULL;
+        
+        while(curr){
+            ne = ne->next;
+            curr->next = prev;
+            prev = curr;
+            if(!ne) return curr;
+            curr = ne;
+        }
+        
+        return curr;
+    }
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        
+        ListNode* newhead = new ListNode(-1);
+        newhead->next = head;
+        
+        ListNode* slow = newhead, *fast = head;
+        
+        while(fast){
+            ListNode* prev = slow;
+            int i = 0;
+            while(i < k && fast){
+                prev = prev->next;
+                fast = fast->next;
+                i++;
+            }
+            if(i < k) return newhead->next;
+            
+            prev->next = NULL;
+            slow->next = reverse(slow->next);
+            while(slow->next){
+                slow = slow->next;
+            }
+            slow->next = fast;
+        }
+        
+        return newhead->next;
+    }
+};
+
+Q4
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverse(ListNode* head){
+        
+        ListNode* curr = head, *ne = head;
+        ListNode* prev = NULL;
+        
+        while(curr){
+            ne = ne->next;
+            curr->next = prev;
+            prev = curr;
+            if(!ne) return curr;
+            curr = ne;
+        }
+        
+        return curr;
+    }
+    bool isPalindrome(ListNode* head) {
+        
+        
+        ListNode* slow = head, *fast = head;
+        
+        while(fast->next && fast->next->next){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        slow->next = reverse(slow->next);
+        
+        fast = slow->next;
+        slow = head;
+        
+        while(fast){
+            if(slow->val != fast->val) return false;
+            slow = slow->next;
+            fast = fast->next;
+        }
+        
+        return true;
+    }
+};
+
+Q5
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isCycle(ListNode* head, ListNode* slow, ListNode* &fast){
+        
+        while(fast && fast->next){
+            slow = slow->next;
+            fast = fast->next->next;
+            if(slow == fast)
+                return true;
+        }
+        
+        return false;
+    }
+    ListNode *detectCycle(ListNode *head) {
+        
+        ListNode* slow = head, *fast = head;
+        
+        if(!isCycle(head, slow, fast)) return NULL;
+        
+        slow = head;
+        while(slow != fast){
+            slow = slow->next;
+            fast = fast->next;
+        }
+        
+        return slow;
+    }
+};
+
+Q6
+Node* merge(Node* head1, Node* head2){
+    Node* curr1 = head1, *curr2 = head2;
+    if(!head1) return head2;
+    if(!head2) return head1;
+    if(curr1->data < curr2->data){
+            curr1->bottom = merge(curr1->bottom, curr2);
+            return curr1;
+        }
+    else{
+        curr2->bottom = merge(curr1, curr2->bottom);
+        return curr2;
+    }
+    return curr1;
+}
+Node *flatten(Node *root)
+{
+   // Your code here
+   if(!root || !root->next) return root;
+   
+   root->next = flatten(root->next);
+   
+   root = merge(root, root->next);
+   return root;
+}
