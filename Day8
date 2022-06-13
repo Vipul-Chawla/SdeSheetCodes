@@ -1,0 +1,402 @@
+Q1
+// { Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+ // } Driver Code Ends
+class Solution
+{
+    public:
+    //Function to find the maximum number of meetings that can
+    //be performed in a meeting room.
+    bool static sortsec(pair<int, int> &a, pair<int, int> &b){
+        return a.second < b.second;
+    }
+    int maxMeetings(int start[], int end[], int n)
+    {
+        // Your code here
+        vector<pair<int, int>> slot;
+        for(int i=0; i<n; i++){
+            slot.push_back({start[i], end[i]});
+        }
+        
+        sort(slot.begin(), slot.end(), sortsec);
+        
+        int cnt = 1;
+        pair<int, int> curr = slot[0];
+        for(int i=1; i<n; i++){
+            if(slot[i].first > curr.second){
+                cnt++;
+                curr = slot[i];
+            }
+        }
+        
+        return cnt;
+    }
+};
+
+// { Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        int start[n], end[n];
+        for (int i = 0; i < n; i++) cin >> start[i];
+
+        for (int i = 0; i < n; i++) cin >> end[i];
+
+        Solution ob;
+        int ans = ob.maxMeetings(start, end, n);
+        cout << ans << endl;
+    }
+    return 0;
+}  // } Driver Code Ends
+Q2
+// { Driver Code Starts
+// Program to find minimum number of platforms
+// required on a railway station
+#include <bits/stdc++.h>
+using namespace std;
+
+
+ // } Driver Code Ends
+class Solution{
+    public:
+    //Function to find the minimum number of platforms required at the
+    //railway station such that no train waits.
+    int findPlatform(int arr[], int dep[], int n)
+    {
+    	// Your code here
+    	sort(arr, arr + n);
+    	sort(dep, dep + n);
+    	
+    	int pltreq = 1, res = 1;
+    	int i = 1, j = 0;
+    	while(i < n && j < n){
+    	    if(arr[i] <= dep[j]){
+    	        pltreq++;
+    	        i++;
+    	    }
+    	    else{
+    	        j++;
+    	        pltreq--;
+    	    }
+    	    
+    	    res = max(res, pltreq);
+    	}
+    	
+    	return res;
+    }
+};
+
+
+// { Driver Code Starts.
+// Driver code
+int main()
+{
+    int t;
+    cin>>t;
+    while(t--) 
+    {
+        int n;
+        cin>>n;
+        int arr[n];
+        int dep[n];
+        for(int i=0;i<n;i++)
+            cin>>arr[i];
+        for(int j=0;j<n;j++){
+            cin>>dep[j];
+        }
+        Solution ob;
+        cout <<ob.findPlatform(arr, dep, n)<<endl;
+    } 
+   return 0;
+}  // } Driver Code Ends
+
+Q3
+// { Driver Code Starts
+// Program to find the maximum profit job sequence from a given array 
+// of jobs with deadlines and profits 
+#include<bits/stdc++.h>
+using namespace std; 
+
+// A structure to represent a job 
+struct Job 
+{ 
+    int id;	 // Job Id 
+    int dead; // Deadline of job 
+    int profit; // Profit if job is over before or on deadline 
+}; 
+
+
+ // } Driver Code Ends
+/*
+struct Job 
+{ 
+    int id;	 // Job Id 
+    int dead; // Deadline of job 
+    int profit; // Profit if job is over before or on deadline 
+};
+*/
+
+class Solution 
+{
+    public:
+    bool static sortprofit(pair<int, int> &a, pair<int, int> &b){
+        
+        return a.second > b.second;
+    }
+    //Function to find the maximum profit and the number of jobs done.
+    vector<int> JobScheduling(Job arr[], int n) 
+    { 
+        // your code here
+        vector<bool> slots(n, false);
+        vector<pair<int, int>> jobs;
+        for(int i=0; i<n; i++){
+            jobs.push_back({arr[i].dead, arr[i].profit});
+        }
+        
+        sort(jobs.begin(), jobs.end(), sortprofit);
+        
+        int maxprofit = 0;
+        int jobcount = 0;
+        for(auto job:jobs){
+            for(int i=job.first-1; i>=0; i--){
+                
+                if(!slots[i]){
+                    
+                    slots[i] = true;
+                    
+                    maxprofit += job.second;
+                    jobcount ++;
+                    
+                    break;
+                }
+            }
+        }
+        
+        return {jobcount, maxprofit};
+    } 
+};
+
+// { Driver Code Starts.
+// Driver program to test methods 
+int main() 
+{ 
+    int t;
+    //testcases
+    cin >> t;
+    
+    while(t--){
+        int n;
+        
+        //size of array
+        cin >> n;
+        Job arr[n];
+        
+        //adding id, deadline, profit
+        for(int i = 0;i<n;i++){
+                int x, y, z;
+                cin >> x >> y >> z;
+                arr[i].id = x;
+                arr[i].dead = y;
+                arr[i].profit = z;
+        }
+        Solution ob;
+        //function call
+        vector<int> ans = ob.JobScheduling(arr, n);
+        cout<<ans[0]<<" "<<ans[1]<<endl;
+    }
+	return 0; 
+}
+
+
+  // } Driver Code Ends
+  
+Q4
+// { Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Item{
+    int value;
+    int weight;
+};
+
+
+ // } Driver Code Ends
+//class implemented
+/*
+struct Item{
+    int value;
+    int weight;
+};
+*/
+
+
+class Solution
+{
+    public:
+    //Function to get the maximum total value in the knapsack.
+    double fractionalKnapsack(int W, Item arr[], int n)
+    {
+        // Your code here
+        vector<pair<double, int>> temp(n);
+        for(int i=0; i<n; i++){
+            temp[i] = {(double)arr[i].value / (double)arr[i].weight, i};
+        }
+        
+        sort(temp.rbegin(), temp.rend());
+        
+        double maxprofit = 0;
+        for(int i=0; i<n && W > 0; i++){
+            int idx = temp[i].second;
+            if(arr[idx].weight > W){
+                maxprofit += temp[i].first * W;
+                W = 0;
+            }
+            else{
+                maxprofit += arr[idx].value;
+                W -= arr[idx].weight;
+            }
+        }
+        return maxprofit;
+    }
+        
+};
+
+
+// { Driver Code Starts.
+int main()
+{
+	int t;
+	//taking testcases
+	cin>>t;
+	cout<<setprecision(2)<<fixed;
+	while(t--){
+	    //size of array and weight
+		int n, W;
+		cin>>n>>W;
+		
+		Item arr[n];
+		//value and weight of each item
+		for(int i=0;i<n;i++){
+			cin>>arr[i].value>>arr[i].weight;
+		}
+		
+		//function call
+		Solution ob;
+		cout<<ob.fractionalKnapsack(W, arr, n)<<endl;
+	}
+    return 0;
+}  // } Driver Code Ends
+
+Q5
+// { Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+ // } Driver Code Ends
+class Solution{
+
+	public:
+	int minCoins(int coins[], int n, int V) 
+	{ 
+	    // Your code goes here
+	    sort(coins, coins + n);
+	    
+	    int cnt = 0;
+	    for(int i=n-1; i>=0 && V > 0; i--){
+	        if(coins[i] <= V){
+	            cnt += V / coins[i];
+	            V %= coins[i];
+	        }
+	    }
+	    
+	    return cnt;
+	} 
+	  
+};
+
+// { Driver Code Starts.
+int main() 
+{
+   
+   
+   	int t;
+    cin >> t;
+    while (t--)
+    {
+        int v, m;
+        cin >> v >> m;
+
+        int coins[m];
+        for(int i = 0; i < m; i++)
+        	cin >> coins[i];
+
+      
+	    Solution ob;
+	    cout << ob.minCoins(coins, m, v) << "\n";
+	     
+    }
+    return 0;
+}
+  // } Driver Code Ends
+  
+Q6
+// { Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+ // } Driver Code Ends
+class Solution
+{
+    public:
+    //Function to find the maximum number of meetings that can
+    //be performed in a meeting room.
+    bool static sortsec(pair<int, int> &a, pair<int, int> &b){
+        return a.second < b.second;
+    }
+    int maxMeetings(int start[], int end[], int n)
+    {
+        // Your code here
+        vector<pair<int, int>> slot;
+        for(int i=0; i<n; i++){
+            slot.push_back({start[i], end[i]});
+        }
+        
+        sort(slot.begin(), slot.end(), sortsec);
+        
+        int cnt = 1;
+        pair<int, int> curr = slot[0];
+        for(int i=1; i<n; i++){
+            if(slot[i].first > curr.second){
+                cnt++;
+                curr = slot[i];
+            }
+        }
+        
+        return cnt;
+    }
+};
+
+// { Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        int start[n], end[n];
+        for (int i = 0; i < n; i++) cin >> start[i];
+
+        for (int i = 0; i < n; i++) cin >> end[i];
+
+        Solution ob;
+        int ans = ob.maxMeetings(start, end, n);
+        cout << ans << endl;
+    }
+    return 0;
+}  // } Driver Code Ends
