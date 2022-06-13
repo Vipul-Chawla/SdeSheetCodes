@@ -1,0 +1,189 @@
+Q1
+// { Driver Code Starts
+#include<bits/stdc++.h> 
+using namespace std; 
+
+ // } Driver Code Ends
+class Solution
+{
+public:
+    void findsum(int i, vector<int> arr, int sum, vector<int> &result){
+        if(i < 0){
+            result.push_back(sum);
+            return;}
+    
+        findsum(i-1, arr, sum + arr[i], result);
+        findsum(i-1, arr, sum, result);
+    }
+    vector<int> subsetSums(vector<int> arr, int N)
+    {
+        // Write Your Code here
+        vector<int> result;
+        findsum(N-1, arr, 0, result);
+        return result;
+    }
+};
+
+// { Driver Code Starts.
+int main()
+{
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        int N;
+        cin>>N;
+        vector<int> arr(N);
+        for(int i = 0 ; i < N ; i++){
+            cin >> arr[i];
+        }
+        Solution ob;
+        vector<int> ans = ob.subsetSums(arr,N);
+        sort(ans.begin(),ans.end());
+        for(auto sum : ans){
+            cout<< sum<<" ";
+        }
+        cout<<endl;
+    }
+    return 0;
+}  // } Driver Code Ends
+
+Q2
+class Solution {
+public:
+    void findsubsets(int idx, vector<int> &nums, vector<int> &currset, vector<vector<int>>& result){
+        
+        result.push_back(currset);
+        
+        for(int i=idx; i<nums.size(); i++){
+            if(i > idx && nums[i-1] == nums[i])
+                continue;
+            currset.push_back(nums[i]);
+            findsubsets(i+1, nums, currset, result);
+            currset.pop_back();
+        }
+    }
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        
+        sort(nums.begin(), nums.end());
+        vector<int> currset;
+        vector<vector<int>> result;
+        findsubsets(0, nums, currset, result);
+        return result;
+    }
+};
+
+Q3
+class Solution {
+public:
+    void findsubsets(int idx, vector<int>& arr, vector<int>& currset, vector<vector<int>>& result, int target){
+        if(idx < 0 || target < 0)
+            return;
+        if(target == 0){
+            result.push_back(currset);
+            return;
+        }
+        
+        findsubsets(idx-1, arr, currset, result, target);
+        currset.push_back(arr[idx]);
+        findsubsets(idx, arr, currset, result, target - arr[idx]);
+        currset.pop_back();
+    }
+    vector<vector<int>> combinationSum(vector<int>& arr, int target) {
+        
+        vector<int> currset;
+        vector<vector<int>> result;
+        int n = arr.size();
+        findsubsets(n-1, arr, currset, result, target);
+        
+        return result;
+    }
+};
+
+Q4
+class Solution {
+public:
+    void findsubsets(int idx, vector<int>& arr, vector<int>& currset, vector<vector<int>>& result, int target){
+        if(target < 0)
+            return;
+        if(target == 0)
+            result.push_back(currset);
+        
+        for(int i=idx; i<arr.size(); i++){
+            if(i > idx && arr[i-1] == arr[i])
+                continue;
+            currset.push_back(arr[i]);
+            findsubsets(i+1, arr, currset, result, target - arr[i]);
+            currset.pop_back();
+        }
+    }
+    vector<vector<int>> combinationSum2(vector<int>& arr, int target) {
+        
+        sort(arr.begin(), arr.end());
+        vector<int> currset;
+        vector<vector<int>> result;
+        findsubsets(0, arr, currset, result, target);
+        return result;
+    }
+};
+
+Q5
+class Solution {
+public:
+    vector<vector<string>> partition(string s) {
+        
+        vector<vector<string>> result;
+        vector<string> curr;
+        findstrings(0, curr, result, s);
+        return result;
+    }
+    void findstrings(int start, vector<string>& curr, vector<vector<string>>& result, string s){
+        if(start == s.length()){
+            result.push_back(curr);
+            return;
+        }
+        
+        for(int i=start; i<s.length(); i++){
+            if(ispalindrome(start, i, s)){
+                curr.push_back(s.substr(start, i-start+1));
+                findstrings(i+1, curr, result, s);
+                curr.pop_back();
+            }
+        }
+    }
+    bool ispalindrome(int i, int j, string s){
+        while(i < j){
+            if(s[i] != s[j]) return false;
+            i++, j--;
+        }
+        return true;
+    }
+};
+
+Q6
+class Solution {
+public:
+    string getPermutation(int n, int k) {
+        
+        vector<int> nums;
+        int fact = 1;
+        for(int i=1; i<n; i++){
+            fact = fact * i;
+            nums.push_back(i);
+        }
+        nums.push_back(n);
+        k = k - 1;
+        
+        string ans = "";
+        while(1){
+            ans += to_string(nums[k/fact]);
+            nums.erase(nums.begin() + k/fact);
+            if(nums.size() == 0)
+                break;
+            k = k%fact;
+            fact = fact / nums.size();
+        }
+        
+        return ans;
+    }
+};
