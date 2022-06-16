@@ -1,0 +1,277 @@
+Q1
+// Working for 5 precision only, because bydefault double gives precision upto 5 decimal places after point.
+// double pow(double n, int p){
+   
+//     double ans = 1.0;
+//     for(int i=0; i<p; i++){
+//         ans *= n;
+//     }
+//     return ans;
+// }
+// double findNthRootOfM(int n, long long m) {
+// 	// Write your code here.
+    
+//     double start = 1, end = m, eps = 1e-6;
+//     double val1 = 0, val2 = 0;
+//     while((end - start) > eps){
+//         double mid = (start + end) / 2.0;
+//         double temp = pow(mid, n);
+//         if(temp >= m){
+//             end = mid;
+//             val1 = temp;
+//         }else{
+//             start = mid;
+//             val2 = temp;
+//         }
+//     }
+    
+// }
+
+double findNthRootOfM(int n, long long m) {
+
+    double error = 1e-7;
+
+   
+    double diff = 1e18;
+
+    double xk = 2;
+
+    
+    while (diff > error) {
+
+        double xk_1 = (pow(xk, n) * (n - 1) + m) / (n * pow(xk, n - 1));
+
+        diff = abs(xk - xk_1);
+
+        xk = xk_1;
+    }
+
+ 
+    return xk;
+}
+
+Q2
+int countlesser(vector<vector<int>>& matrix, int t){
+    int cnt = 0;
+    for(int i=0; i<matrix.size(); i++){
+        int low = 0, high = matrix[i].size() - 1;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            if(matrix[i][mid] <= t){
+                low = mid + 1;
+            }else{
+                high = mid - 1;
+            }
+        }
+        cnt += low;
+    }
+    return cnt;
+}
+int Solution::findMedian(vector<vector<int> > &matrix) {
+
+    int low = 1, high = 1e9;
+    int n = matrix.size(), m = matrix[0].size();
+    while(low <= high){
+        int mid = (low + high) / 2;
+        int cnt = countlesser( matrix, mid);
+        if(cnt <= (n*m) / 2){
+            low = mid + 1;
+        }else{
+            high = mid - 1;
+        }
+    }
+    return low;
+}
+
+
+
+Q3
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& nums) {
+        
+        int n = nums.size();
+        int s = 0, e = nums.size()-2;
+        while(s <= e){
+            int mid = (s + e) / 2;
+            if(nums[mid] == nums[mid ^ 1]){
+                s = mid + 1;
+            }else{
+                e = mid - 1;
+            }
+            cout << s << " " << mid << " "<<e << endl;
+        }
+        return nums[s];
+    }
+};
+
+Q4
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        
+        int s = 0, e = nums.size() - 1;
+        while(s <= e){
+            int mid = (s + e) / 2;
+            if(nums[mid] > target){
+                if(nums[e] < nums[mid] && target <= nums[e]){
+                    s = mid + 1;
+                }else{
+                    e = mid - 1;
+                }
+            }
+            else if(nums[mid] < target){
+                if(nums[s] > nums[mid] && target >= nums[s]){
+                    e = mid - 1;
+                }else{
+                    s = mid + 1;
+                }
+            }else{
+                return mid;
+            }
+        }
+        if(s < nums.size() && nums[s] == target)
+            return s;
+        return -1;
+    }
+};
+
+Q5
+class Solution {
+public:
+    int findkthelement(vector<int>& nums1, vector<int>& nums2, int k){
+        int n = nums1.size(), m = nums2.size();
+        int low = 0, high = min(n, k);
+        
+        while(low <= high){
+            int mid = (low + high) / 2;
+            int l1 = mid > 0? nums1[mid - 1] : INT_MIN;
+            if(k-mid-1 >= m){
+                low = mid + 1;
+                continue;
+            }
+            int l2 = k <= mid ? INT_MIN : nums2[k-mid-1];
+            int r1 = mid < n ? nums1[mid] : INT_MAX;
+            int r2 = k-mid < m ? nums2[k-mid] : INT_MAX;
+            
+            if(l1 > r2){
+                high = mid - 1;
+            }else if(l2 > r1){
+                low = mid + 1;
+            }else{
+                return max(l1, l2);
+            }
+        }
+        return 0;
+    }
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        
+        int n = nums1.size(), m = nums2.size();
+        double ele1 = 0, ele2 = 0;
+        ele1 = findkthelement(nums1, nums2, (n+m+1)/2);
+        ele2 = findkthelement(nums1, nums2, (n+m+2)/2);
+        return (ele1 + ele2) / 2;
+    }
+};
+
+Q6
+// { Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+
+ // } Driver Code Ends
+class Solution{
+    public:
+    int findkthelement(int nums1[], int nums2[], int n, int m, int k){
+        int low = 0, high = min(n, k);
+        
+        while(low <= high){
+            int mid = (low + high) / 2;
+            int l1 = nums1[mid-1];
+            if(k-mid-1 >= m){
+                low = mid + 1;
+                continue;
+            }
+            int l2 = k <= mid? INT_MIN : nums2[k - mid - 1];
+            int r1 = mid < n ? nums1[mid] : INT_MAX;
+            int r2 = k-mid < m ? nums2[k-mid] : INT_MAX;
+            
+            if(l1 > r2){
+                high = mid - 1;
+            }else if(l2 > r1){
+                low = mid + 1;
+            }else{
+                return max(l1, l2);
+            }
+        }
+    }
+    int kthElement(int arr1[], int arr2[], int n, int m, int k)
+    {
+        if(n < m){
+            return findkthelement(arr1, arr2, n, m, k);
+        }else{
+            return findkthelement(arr2, arr1, m, n, k);
+        }
+    }
+};
+
+// { Driver Code Starts.
+ 
+// Driver code
+int main()
+{
+	int t;
+	cin>>t;
+	while(t--){
+		int n,m,k;
+		cin>>n>>m>>k;
+		int arr1[n],arr2[m];
+		for(int i=0;i<n;i++)
+			cin>>arr1[i];
+		for(int i=0;i<m;i++)
+			cin>>arr2[i];
+		
+		Solution ob;
+        cout << ob.kthElement(arr1, arr2, n, m, k)<<endl;
+	}
+    return 0;
+}  // } Driver Code Ends
+
+Q7
+bool isPossible(vector<int>& nums, int t, int B){
+    int cnt = 1, pages = 0;
+    for(int ele:nums){
+        if(ele > t)
+            return false;
+        if(pages + ele <= t){
+            pages += ele;
+        }else{
+            cnt++;
+            if(cnt > B || ele > t)
+                return false;
+            pages = ele;
+        }
+    }
+    return true;
+}
+int Solution::books(vector<int> &nums, int B) {
+
+    if(nums.size() < B) return -1;
+    
+    int low = nums[0];
+    int high = 0;
+    for(int ele:nums) high += ele;
+
+    int res = -1;
+    while(low <= high){
+        int mid = (low + high) / 2;
+        if(isPossible(nums, mid, B)){
+            res = mid;
+            high = mid - 1;
+        }else{
+            low = mid + 1;
+        }
+    }
+    return res;
+}
