@@ -1,0 +1,182 @@
+Q1
+vector<int> minHeap(int n, vector<vector<int>>& q) {
+    // Write your code here.
+    vector<int> res;
+    vector<int> arr;
+    
+    for(auto v:q){
+        if(v[0] == 0){
+            arr.push_back(v[1]);
+        }else{
+            sort(arr.begin(), arr.end());
+            res.push_back(arr[0]);
+            arr.erase(arr.begin());
+        }
+    }
+    return res;
+}
+
+
+Q2
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int, vector<int>, greater<int> > pq;
+        int ans;
+        for(int ele:nums){
+            pq.push(ele);
+            if(pq.size() > k){
+                pq.pop();
+            }
+        }
+        
+        return pq.top();
+    }
+};
+
+Q3
+vector<int> Solution::solve(vector<int> &nums1, vector<int> &nums2, int C) {
+    sort(nums1.begin(), nums1.end());
+    sort(nums2.begin(), nums2.end());
+    for(int ele:nums1) cout << ele << " ";
+    cout << endl;
+    for(int ele:nums2) cout << ele << " ";
+    cout << endl;
+    priority_queue<int, vector<int>, greater<int>> pq;
+    int n = nums1.size();
+    int x = n-1, y = n-1;
+    while(x >= 0 && y >= 0 && pq.size() < C){
+        int i = n-1, j = n-1;
+        while(i > x && j > y){
+            pq.push(nums1[x] + nums2[j]);
+            pq.push(nums2[y] + nums1[i]);
+            i--, j--;
+        }
+        pq.push(nums1[x] + nums2[y]);
+        while(pq.size() > C){
+            pq.pop();
+        }
+        x--, y--;
+    }
+
+    vector<int> res(C, 0);
+    for(int i=C-1; i>=0; i--){
+        res[i] = pq.top();
+        pq.pop();
+    }
+    return res;
+}
+
+
+Q4
+class MedianFinder {
+public:
+    priority_queue<int> maxpq;
+    priority_queue<int, vector<int>, greater<int>> minpq;
+    
+    int size = 0;
+    MedianFinder() {
+        
+    }
+    
+    void addNum(int num) {
+        if(maxpq.size() == minpq.size()){
+            if(maxpq.size() == 0 || maxpq.top() > num)
+                maxpq.push(num);
+            else
+                minpq.push(num);
+        }
+        else{
+            if(maxpq.size() < minpq.size()){
+                if(minpq.top() < num){
+                    int temp = minpq.top();
+                    minpq.pop();
+                    minpq.push(num);
+                    maxpq.push(temp);
+                }else{
+                    maxpq.push(num);
+                }
+            }else{
+                if(maxpq.top() > num){
+                    int temp = maxpq.top();
+                    maxpq.pop();
+                    maxpq.push(num);
+                    minpq.push(temp);
+                }else{
+                    minpq.push(num);
+                }
+            }
+        }
+    }
+    
+    double findMedian() {
+        
+        int n = maxpq.size(), m = minpq.size();
+        if(n == m){
+            return (double)(maxpq.top() + minpq.top()) / 2.0;
+        }
+        else if(n < m) return minpq.top();
+        else
+            return maxpq.top();
+    }
+};
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder* obj = new MedianFinder();
+ * obj->addNum(num);
+ * double param_2 = obj->findMedian();
+ */
+ 
+Q5
+#include<bits/stdc++.h>
+vector<int> mergeKSortedArrays(vector<vector<int>>&kArrays, int k)
+{
+    priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
+    
+    for(int i=0; i<kArrays.size(); i++){
+        pq.push({kArrays[i][0], {i, 0}});
+    }
+    
+    vector<int> res;
+    while(!pq.empty()){
+        auto p = pq.top();
+        int ari = p.second.first;
+        int idx = p.second.second;
+        res.push_back(p.first);
+        pq.pop();
+        if(kArrays[ari].size() > idx + 1){
+            pq.push({kArrays[ari][idx + 1], {ari, idx+1}});
+        }
+    }
+    
+    return res;
+}
+
+
+Q6
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> mp;
+        for(int ele:nums){
+            mp[ele]++;
+        }
+        
+        int n = nums.size();
+        vector<int> arr[n+1];
+        for(auto itr:mp){
+            arr[itr.second].push_back(itr.first);
+        }
+        
+        vector<int> res;
+        for(int i=n; i>=0 && k > 0; i--){
+            for(int j=0; j<arr[i].size() && k > 0; j++){
+                res.push_back(arr[i][j]);
+                k--;
+            }
+        }
+        
+        return res;
+    }
+};
